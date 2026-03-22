@@ -198,7 +198,7 @@ document.querySelectorAll("#heroCarousel .carousel-arrow").forEach((arrow) => {
 //  4. Clamp offsets so the preview never shows empty space at edges.
 // ─────────────────────────────────────────────────────────────────────────────
 const zoomLens = document.getElementById("zoomLens");
-const LENS_RATIO = 0.35;
+const LENS_RATIO = 0.21;
 
 heroCarousel.addEventListener("mouseenter", () => {
   zoomPreview.style.backgroundImage = `url('${heroImages[currentHeroIndex]}')`;
@@ -240,6 +240,8 @@ heroCarousel.addEventListener("mousemove", (event) => {
   zoomLens.style.left = lx + "px";
   zoomLens.style.top = ly + "px";
   zoomLens.style.display = "block";
+  zoomLens.style.background = "rgba(82, 82, 82, 0.3)";
+  zoomLens.style.border = "1px solid #B1B1B1";
 
   const zoomScale = prevRect.width / lensSize;
   const scaledW = renderedW * zoomScale;
