@@ -1,21 +1,49 @@
+/* ============================================================
+   DESIGN TOKENS — all reusable values live here.
+   Update once to propagate across the entire stylesheet.
+   ============================================================ */
 :root {
-  --bg: #f5f5f6;
-  --text: #0f172a;
-  --muted: #5a6372;
-  --line: #dfe3ea;
-  --card: #ffffff;
-  --brand: #2B3990;
-  --brand-dark: #061233;
-  --brand-soft: #eef1ff;
-  --radius: 14px;
-  --container: 1240px;
-  --shadow: 0 10px 30px rgba(12, 19, 35, 0.08);
+  /* Colours */
+  --bg:          #f5f5f6;       /* page background */
+  --text:        #0f172a;       /* primary body text */
+  --muted:       #5a6372;       /* secondary / caption text */
+  --line:        #dfe3ea;       /* borders and dividers */
+  --card:        #ffffff;       /* card / surface background */
+  --brand:       #2B3990;       /* primary brand blue */
+  --brand-dark:  #061233;       /* darker brand for hover/active */
+  --brand-soft:  #eef1ff;       /* tinted brand background */
+  --heading:     #111827;       /* section heading colour */
+  --dark-bg:     #111827;       /* dark section background */
+
+  /* Spacing */
+  --section-v:   100px;         /* default section vertical padding */
+  --gap-grid:    64px;          /* hero + cta grid column gap */
+
+  /* Radius */
+  --radius:      14px;          /* default card border-radius */
+  --radius-sm:   8px;           /* inputs and small elements */
+  --radius-lg:   24px;          /* carousel, large cards */
+
+  /* Layout */
+  --container:   1240px;        /* max content width */
+
+  /* Shadows */
+  --shadow:      0 10px 30px rgba(12, 19, 35, 0.08);
+  --shadow-lg:   0 12px 48px rgba(12, 19, 35, 0.22);
+
+  /* Typography */
+  --font-body:   "Plus Jakarta Sans", sans-serif;
+  --font-head:   "Urbanist", sans-serif;
+  --font-ui:     "Inter", sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
 html,
 body {
   margin: 0;
@@ -24,8 +52,9 @@ body {
 }
 
 body {
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: var(--font-body);
   color: var(--text);
+  /* subtle dot-grid pattern for the page background */
   background: radial-gradient(circle at 1px 1px, #eceef1 1px, #f8f8f9 0) 0 0/4px 4px;
   line-height: 1.45;
 }
@@ -35,21 +64,27 @@ img {
   display: block;
 }
 
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
 .container {
   width: min(var(--container), calc(100% - 120px));
   margin: 0 auto;
 }
 
 .section-pad {
-  padding: 100px 0;
+  padding: var(--section-v) 0;
 }
 
 .section-pad-dark {
-  padding: 100px 0;
-  background: #111827;
+  padding: var(--section-v) 0;
+  background: var(--dark-bg);
   color: #f4f6ff;
 }
 
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
 h1,
 h2,
 h3,
@@ -62,7 +97,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: "Urbanist", sans-serif;
+  font-family: var(--font-head);
 }
 
 h1 {
@@ -76,11 +111,12 @@ h2 {
   line-height: 120%;
   font-weight: 700;
   margin-bottom: 20px;
-  color: #111827;
+  color: var(--heading);
 }
 
+/* Section sub-heading — uses Inter for readability at body size */
 .section-lead {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-ui);
   color: #4D545C;
   max-width: 800px;
   margin-bottom: 56px;
@@ -94,9 +130,12 @@ h2 {
   text-align: center;
 }
 
+/* ============================================================
+   BUTTONS — base + variants (primary, outline, lite, dark)
+   ============================================================ */
 .btn {
   border: 0;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   font-size: 16px;
   line-height: 1;
   font-weight: 500;
@@ -127,7 +166,7 @@ h2 {
 .btn-outline {
   background: transparent;
   color: #262A2E;
-  border: 1px solid #2B3990;
+  border: 1px solid var(--brand);
 }
 
 .btn-outline:hover {
@@ -234,10 +273,9 @@ h2 {
   transform: rotate(90deg);
 }
 
-/* .btn-nav-contact {
-  color: #FFFFFF !important;
-} */
-
+/* ============================================================
+   STICKY HEADER — slides in after 75 % scroll, managed by JS
+   ============================================================ */
 .sticky-header {
   position: fixed;
   inset: 0 0 auto 0;
@@ -266,8 +304,11 @@ h2 {
   min-height: 62px;
 }
 
+/* ============================================================
+   HERO SECTION — image carousel + product info grid
+   ============================================================ */
 .hero-section {
-  padding-top: 80px;
+  padding-top: 32px;
   padding-bottom: 80px;
 }
 
@@ -275,7 +316,7 @@ h2 {
   font-size: 13px;
   color: #9ca3af;
   font-weight: 500;
-  margin-bottom: 28px;
+  margin-bottom: 48px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -570,6 +611,9 @@ h2 {
   flex-shrink: 0;
 }
 
+/* ============================================================
+   SPECIFICATIONS SECTION — dark table layout
+   ============================================================ */
 .spec-section h2,
 .spec-section .section-lead {
   color: #FFFFFF;
@@ -659,6 +703,9 @@ tbody td {
   line-height: 24px;
 }
 
+/* ============================================================
+   FAQ SECTION — accordion details/summary
+   ============================================================ */
 .faq-section {
   border-top: 1px solid #E1E3E8;
   border-bottom: 1px solid #E1E3E8;
@@ -864,6 +911,9 @@ tbody td {
   opacity: 0.8;
 }
 
+/* ============================================================
+   PROCESS SECTION — tabbed step panel
+   ============================================================ */
 .process-section {
   border-top: 1px solid #e4e7ee;
 }
@@ -1049,8 +1099,12 @@ tbody td {
   object-fit: contain;
 }
 
+/* ============================================================
+   TESTIMONIALS SECTION — horizontally scrollable cards
+   ============================================================ */
 .testimonials {
-  border-top: 1px solid #e5e8ef;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .testimonials h2,
@@ -1166,6 +1220,9 @@ tbody td {
   opacity: 0.35;
 }
 
+/* ============================================================
+   PORTFOLIO SECTION — image card grid
+   ============================================================ */
 .portfolio-section h2 {
   text-align: center;
   font-size: 44px;
@@ -1240,8 +1297,11 @@ tbody td {
   font-size: 15px;
 }
 
+/* ============================================================
+   RESOURCES & DOWNLOADS SECTION
+   ============================================================ */
 .resources-section {
-  border-top: 1px solid #e5e8ef;
+  border-top: 1px solid var(--line);
 }
 
 .resources-section .container {
@@ -1295,13 +1355,16 @@ tbody td {
   object-fit: contain;
 }
 
+/* ============================================================
+   CONTACT / CTA SECTION — two-column form panel
+   ============================================================ */
 .contact-section {
-  border-top: 1px solid #e5e8ef;
+  border-top: 1px solid var(--line);
 }
 
 .cta-panel {
-  border-radius: 24px;
-  background: #2B3990;
+  border-radius: var(--radius-lg);
+  background: var(--brand);
   color: #fff;
   display: grid;
   grid-template-columns: 1fr 420px;
@@ -1398,10 +1461,12 @@ tbody td {
   margin-top: 6px;
 }
 
+/* ============================================================
+   FOOTER
+   ============================================================ */
 .site-footer {
   padding-top: 80px;
-  border-top: 1px solid #e4e8f0;
-  background: #fbfcff;
+  border-top: 1px solid var(--line);
 }
 
 .footer-banner {
@@ -1412,6 +1477,7 @@ tbody td {
   justify-content: space-between;
   gap: 40px;
   padding: 36px 40px;
+  background: #FFFFFF;
 }
 
 .footer-banner p {
@@ -1704,6 +1770,9 @@ tbody td {
   width: 100%;
 }
 
+/* ============================================================
+   RESPONSIVE — ≤1280px: large laptops, scale type down
+   ============================================================ */
 @media (max-width: 1280px) {
   .logo-track img {
     width: 112px;
@@ -1723,6 +1792,9 @@ tbody td {
   }
 }
 
+/* ============================================================
+   RESPONSIVE — ≤1080px: smaller laptops, tighten container
+   ============================================================ */
 @media (max-width: 1080px) {
   .container {
     width: min(var(--container), calc(100% - 120px));
@@ -1771,6 +1843,9 @@ tbody td {
   }
 }
 
+/* ============================================================
+   RESPONSIVE — ≤900px: tablets, collapse multi-column grids
+   ============================================================ */
 @media (max-width: 900px) {
   .container {
     width: min(var(--container), calc(100% - 96px));
@@ -1779,7 +1854,7 @@ tbody td {
   .section-pad,
   .section-pad-dark,
   .hero-section {
-    padding-top: 80px;
+    padding-top: 32px;
     padding-bottom: 80px;
   }
 
@@ -1844,6 +1919,9 @@ tbody td {
   }
 }
 
+/* ============================================================
+   RESPONSIVE — ≤800px: large phones, full-width layout
+   ============================================================ */
 @media (max-width: 800px) {
   .container {
     width: 100%;
@@ -1984,6 +2062,9 @@ tbody td {
   }
 }
 
+/* ============================================================
+   RESPONSIVE — ≤480px: small phones, compact vertical rhythm
+   ============================================================ */
 @media (max-width: 480px) {
   .container {
     width: 100%;
