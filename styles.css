@@ -54,8 +54,7 @@ body {
 body {
   font-family: var(--font-body);
   color: var(--text);
-  /* subtle dot-grid pattern for the page background */
-  background: radial-gradient(circle at 1px 1px, #eceef1 1px, #f8f8f9 0) 0 0/4px 4px;
+  background: url('assets/images/background-primary.png') center top / cover fixed;
   line-height: 1.45;
 }
 
@@ -1926,6 +1925,14 @@ tbody td {
   .container {
     width: 100%;
     padding-inline: 48px;
+  }
+
+  .contact-section{ 
+    padding-inline: 16px;
+  }
+
+  .contact-section .cta-panel {
+    padding: 24px;
   }
 
   .section-pad,
