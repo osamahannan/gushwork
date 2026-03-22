@@ -198,7 +198,7 @@ document.querySelectorAll("#heroCarousel .carousel-arrow").forEach((arrow) => {
 //  4. Clamp offsets so the preview never shows empty space at edges.
 // ─────────────────────────────────────────────────────────────────────────────
 const zoomLens = document.getElementById("zoomLens");
-const LENS_RATIO = 0.35; // lens side = 35 % of the carousel's shorter dimension
+const LENS_RATIO = 0.35;
 
 heroCarousel.addEventListener("mouseenter", () => {
   zoomPreview.style.backgroundImage = `url('${heroImages[currentHeroIndex]}')`;
@@ -206,70 +206,49 @@ heroCarousel.addEventListener("mouseenter", () => {
 
 heroCarousel.addEventListener("mousemove", (event) => {
   const carRect = heroCarousel.getBoundingClientRect();
-  const prevW = zoomPreview.clientWidth;
-  const prevH = zoomPreview.clientHeight;
-  if (prevW === 0) return;
+  const prevRect = zoomPreview.getBoundingClientRect();
+  if (prevRect.width === 0) return;
 
-  const imgEl = heroCarousel.querySelector("img");
-  if (!imgEl) return;
-  const imgRect = imgEl.getBoundingClientRect();
-  const natW = imgEl.naturalWidth;
-  const natH = imgEl.naturalHeight;
-  if (!natW || !natH) return;
-
-  // Determine which part of the source image is visible after object-fit: cover.
-  const boxAR = imgRect.width / imgRect.height;
-  const natAR = natW / natH;
-  let srcVisW, srcVisH, srcOffX, srcOffY;
-  if (natAR > boxAR) {
-    srcVisH = natH;
-    srcVisW = natH * boxAR;
-    srcOffX = (natW - srcVisW) / 2; // horizontal crop offset in source pixels
-    srcOffY = 0;
+  // Compute the actual rendered size of the image accounting for object-fit: cover
+  const img = heroCarousel.querySelector("img");
+  const naturalW = (img && img.naturalWidth) || carRect.width;
+  const naturalH = (img && img.naturalHeight) || carRect.height;
+  const imageAspect = naturalW / naturalH;
+  const containerAspect = carRect.width / carRect.height;
+  let renderedW, renderedH;
+  if (imageAspect > containerAspect) {
+    renderedH = carRect.height;
+    renderedW = renderedH * imageAspect;
   } else {
-    srcVisW = natW;
-    srcVisH = natW / boxAR;
-    srcOffX = 0;
-    srcOffY = (natH - srcVisH) / 2; // vertical crop offset in source pixels
+    renderedW = carRect.width;
+    renderedH = renderedW / imageAspect;
   }
+  const imgOffsetX = (renderedW - carRect.width) / 2;
+  const imgOffsetY = (renderedH - carRect.height) / 2;
 
-  // Ratio of source pixels to rendered (display) pixels.
-  const pxScale = srcVisW / imgRect.width;
+  // Use a square lens to match the square preview (no stretching)
+  const lensSize = Math.min(carRect.width, carRect.height) * LENS_RATIO;
 
-  // Square lens sized relative to the rendered image element.
-  const lensSize = Math.min(imgRect.width, imgRect.height) * LENS_RATIO;
+  let lx = event.clientX - carRect.left - lensSize / 2;
+  let ly = event.clientY - carRect.top - lensSize / 2;
 
-  // Constrain lens to stay within the image boundaries.
-  let lx = event.clientX - imgRect.left - lensSize / 2;
-  let ly = event.clientY - imgRect.top - lensSize / 2;
-  lx = Math.max(0, Math.min(imgRect.width - lensSize, lx));
-  ly = Math.max(0, Math.min(imgRect.height - lensSize, ly));
+  lx = Math.max(0, Math.min(carRect.width - lensSize, lx));
+  ly = Math.max(0, Math.min(carRect.height - lensSize, ly));
 
-  // Position the lens div on the carousel container.
-  const lensLeft = lx + (imgRect.left - carRect.left);
-  const lensTop  = ly + (imgRect.top  - carRect.top);
-  zoomLens.style.width   = lensSize + "px";
-  zoomLens.style.height  = lensSize + "px";
-  zoomLens.style.left    = lensLeft + "px";
-  zoomLens.style.top     = lensTop  + "px";
+  zoomLens.style.width = lensSize + "px";
+  zoomLens.style.height = lensSize + "px";
+  zoomLens.style.left = lx + "px";
+  zoomLens.style.top = ly + "px";
   zoomLens.style.display = "block";
 
-  // Map the lens area to source-image coordinates.
-  const srcLensX    = srcOffX + lx * pxScale;
-  const srcLensY    = srcOffY + ly * pxScale;
-  const srcLensSize = lensSize * pxScale;
+  const zoomScale = prevRect.width / lensSize;
+  const scaledW = renderedW * zoomScale;
+  const scaledH = renderedH * zoomScale;
+  const bgOffsetX = Math.max(0, Math.min((lx + imgOffsetX) * zoomScale, scaledW - prevRect.width));
+  const bgOffsetY = Math.max(0, Math.min((ly + imgOffsetY) * zoomScale, scaledH - prevRect.height));
 
-  // Scale the full source image so srclensArea fills the preview box.
-  const bgScale = prevW / srcLensSize;
-  const bgW = natW * bgScale;
-  const bgH = natH * bgScale;
-
-  // Clamp offsets to prevent empty/transparent edges in the preview.
-  const bgX = Math.max(0, Math.min(srcLensX * bgScale, bgW - prevW));
-  const bgY = Math.max(0, Math.min(srcLensY * bgScale, bgH - prevH));
-
-  zoomPreview.style.backgroundSize     = `${bgW}px ${bgH}px`;
-  zoomPreview.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+  zoomPreview.style.backgroundSize = `${scaledW}px ${scaledH}px`;
+  zoomPreview.style.backgroundPosition = `-${bgOffsetX}px -${bgOffsetY}px`;
   zoomPreview.classList.add("show");
 });
 
